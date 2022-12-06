@@ -88,10 +88,11 @@ public class ControladorCompras {
             JSONParser parser = new JSONParser();
             JSONObject comprasJSON = (JSONObject) parser.parse(res);
             compra.toObject((JSONObject)comprasJSON);
+            return compra;
         } catch (Exception e) {
             System.err.println("error");
         }
-        return compra;
+        return null;
     }
     /**
      * Método encargado de traer todos los datos de la ruta 'compras'

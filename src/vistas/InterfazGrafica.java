@@ -50,6 +50,13 @@ public class InterfazGrafica extends javax.swing.JFrame {
         actualizarTablaCompras();
     }
 
+    public void llenarCompras(){
+        LinkedList<Compra> temp = this.miControladorCompras.listar();
+        for(int i = 0; i < temp.size(); i++){
+            
+        }
+    }
+    
     public void actualizarTablaProductos(JTable tabla){
         this.productos = this.miControladorProductos.listar();
         String nombresColumnas[]={"Id","Nombre","Tipo","Valor" ,"Cantidad"};
@@ -72,8 +79,8 @@ public class InterfazGrafica extends javax.swing.JFrame {
 //            this.clienteActual.getMi_compra().setProductos(this.miControladorProductos.produtosEncompra(idCompra));
 //            String nombresColumnas[]={"Id","Nombre","Tipo","Valor" ,"Cantidad"};
 //            DefaultTableModel miModelo= new DefaultTableModel(null, nombresColumnas);
-//           this.tablaClientes.setModel(miModelo);
-//            for (Producto actual: this.clienteActual.getMi_compra().getProductos()){
+//           this.tablaCompras.setModel(miModelo);
+//            for (Producto actual: this.productosCompra){
 //                String fila[]=new String[nombresColumnas.length];
 //                fila[0]=actual.getId();
 //                fila[1]=actual.getNombre();
@@ -655,25 +662,31 @@ public class InterfazGrafica extends javax.swing.JFrame {
 
     private void btnComprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprarActionPerformed
         Producto elProducto = this.productos.get(this.tablaProductosClientes.getSelectedRow());
-        if(elProducto.getExistencia() > 0){
+        if(elProducto.getExistencia() > 0 ){
+            Compra laCompra = new Compra();
             try {
-            Compra laCompra = new Compra("16/01/2001", (long)0);
-            laCompra = this.miControladorCompras.crear(laCompra, this.clienteActual);
-            this.miControladorProductos.agregarProductoAcompra(elProducto, laCompra);
             this.clienteActual.setMi_compra(this.miControladorCompras.comprasEnCLiente(this.clienteActual.getId()));
-            this.miControladorClientes.editar(this.clienteActual);
-            actualizarTablaProductos(this.tablaProductos);
-            actualizarTablaProductos(this.tablaProductosClientes);
-            actualizarTablaCompras();
-            JOptionPane.showMessageDialog(this, "PRODUCTO COMPRADO");
+            if(this.clienteActual.getMi_compra() == null){
+                laCompra = new Compra("16/01/2001", (long)0);
+                laCompra = this.miControladorCompras.crear(laCompra, this.clienteActual);
+                this.clienteActual.getMi_compra().setId(laCompra.getId());
+            }else{
+                laCompra = this.clienteActual.getMi_compra();
+            } 
+                this.miControladorProductos.agregarProductoAcompra(elProducto, laCompra);
+                this.clienteActual.setMi_compra(this.miControladorCompras.comprasEnCLiente(this.clienteActual.getId()));
+                this.miControladorClientes.editar(this.clienteActual);
+                actualizarTablaProductos(this.tablaProductos);
+                actualizarTablaProductos(this.tablaProductosClientes);
+                actualizarTablaCompras();
+                JOptionPane.showMessageDialog(this, "PRODUCTO COMPRADO");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "PRODUCTO NO COMPRADO");
         }
         }else{
             JOptionPane.showMessageDialog(this, "NO HAY EXISTENCIAS");
         }
-        
-            
+        actualizarTablaCompras();
     }//GEN-LAST:event_btnComprarActionPerformed
 
     private void btnEliminarCliente1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarCliente1ActionPerformed
